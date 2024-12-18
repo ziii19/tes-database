@@ -1,0 +1,155 @@
+
+HP@LAPTOP-D8L9A3VB c:\xampp
+# mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 26
+Server version: 10.4.28-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> CREATE DATABASE tes_3;
+Query OK, 1 row affected (0.003 sec)
+
+MariaDB [(none)]> use tes_3
+Database changed
+MariaDB [tes_3]> CREATE TABLE Mahasiswa (
+    -> NIM VARCHAR(10) PRIMAY KEY,
+    -> Nama VARCHAR(50),
+    -> Alamat VARCHAR(100),
+    -> Jurusan VARCHAR(50),
+    -> Umur INT
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'KEY,
+Nama VARCHAR(50),
+Alamat VARCHAR(100),
+Jurusan VARCHAR(50),
+Umur INT
+)' at line 2
+MariaDB [tes_3]> CREATE TABLE Mahasiswa (
+    ->     NIM VARCHAR(10) PRIMARY KEY,
+    ->     Nama VARCHAR(50),
+    ->     Alamat VARCHAR(100),
+    ->     Jurusan VARCHAR(50),
+    ->     Umur INT
+    -> );
+Query OK, 0 rows affected (0.025 sec)
+
+MariaDB [tes_3]> CREATE TABLE MataKuliah (
+    ->     ID INT PRIMARY KEY,
+    ->     MataKuliah VARCHAR(50),
+    ->     NIM VARCHAR(10),
+    ->     Nilai INT,
+    ->     DosenPengajar VARCHAR(50),
+    ->     FOREIGN KEY (NIM) REFERENCES Mahasiswa(NIM)
+    -> );
+Query OK, 0 rows affected (0.065 sec)
+
+MariaDB [tes_3]> INSERT INTO Mahasiswa (NIM, Nama, Alamat, Jurusan, Umur) VALUES
+    -> ('123456', 'John', 'Jl. Merdeka No.1', 'Teknik Informatika', 21),
+    -> ('234567', 'Alice', 'Jl. Gatot Subroto 1', 'Sistem Informasi', 23),
+    -> ('345678', 'Bob', 'Jl. Sutomo No.3', 'Teknik Informatika', 22),
+    -> ('456789', 'David', 'Jl. Pahlawan No.6', 'Manajemen', 24),
+    -> ('567890', 'Eve', 'Jl. Diponegoro No.8', 'Teknik Elektro', 20),
+    -> ('678901', 'Charlie', 'Jl. Cendrawasih No.9', 'Statistika', 21),
+    -> ('789012', 'Frank', 'Jl. Ahmad Yani No.6', 'Teknik Informatika', 19);
+Query OK, 7 rows affected (0.014 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+MariaDB [tes_3]> INSERT INTO MataKuliah (ID, MataKuliah, NIM, Nilai, DosenPengajar) VALUES
+    -> (1, 'Pemrograman Web', '123456', 85, 'Pak Budi'),
+    -> (2, 'Basis Data', '234567', 70, 'Ibu Ani'),
+    -> (3, 'Jaringan Komputer', '345678', 75, 'Pak Dodi'),
+    -> (4, 'Sistem Operasi', '123456', 90, 'Pak Budi'),
+    -> (5, 'Manajemen Proyek', '456789', 80, 'Pak Fahri'),
+    -> (6, 'Bahasa Inggris', '567890', 85, 'Ibu Eka'),
+    -> (7, 'Statistika', '678901', 75, 'Pak Fahri'),
+    -> (8, 'Algoritma', '789012', 65, 'Pak Galih'),
+    -> (9, 'Pemrograman Java', '123456', 95, 'Pak Budi');
+Query OK, 9 rows affected (0.006 sec)
+Records: 9  Duplicates: 0  Warnings: 0
+
+MariaDB [tes_3]> UPDATE Mahasiswa
+    -> SET Alamat = 'Jl. Raya No.5'
+    -> WHERE NIM = '123456';
+Query OK, 1 row affected (0.012 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [tes_3]> SELECT * FROM Mahasiswa;
++--------+---------+----------------------+--------------------+------+
+| NIM    | Nama    | Alamat               | Jurusan            | Umur |
++--------+---------+----------------------+--------------------+------+
+| 123456 | John    | Jl. Raya No.5        | Teknik Informatika |   21 |
+| 234567 | Alice   | Jl. Gatot Subroto 1  | Sistem Informasi   |   23 |
+| 345678 | Bob     | Jl. Sutomo No.3      | Teknik Informatika |   22 |
+| 456789 | David   | Jl. Pahlawan No.6    | Manajemen          |   24 |
+| 567890 | Eve     | Jl. Diponegoro No.8  | Teknik Elektro     |   20 |
+| 678901 | Charlie | Jl. Cendrawasih No.9 | Statistika         |   21 |
+| 789012 | Frank   | Jl. Ahmad Yani No.6  | Teknik Informatika |   19 |
++--------+---------+----------------------+--------------------+------+
+7 rows in set (0.001 sec)
+
+MariaDB [tes_3]> SELECT M.NIM, M.Nama, M.Jurusan, MK.DosenPengajar
+    -> FROM Mahasiswa M
+    -> JOIN MataKuliah MK ON M.NIM = MK.NIM
+    -> WHERE M.Jurusan = 'Teknik Informatika';
++--------+-------+--------------------+---------------+
+| NIM    | Nama  | Jurusan            | DosenPengajar |
++--------+-------+--------------------+---------------+
+| 123456 | John  | Teknik Informatika | Pak Budi      |
+| 345678 | Bob   | Teknik Informatika | Pak Dodi      |
+| 123456 | John  | Teknik Informatika | Pak Budi      |
+| 789012 | Frank | Teknik Informatika | Pak Galih     |
+| 123456 | John  | Teknik Informatika | Pak Budi      |
++--------+-------+--------------------+---------------+
+5 rows in set (0.006 sec)
+
+MariaDB [tes_3]> SELECT Nama, Umur
+    -> FROM Mahasiswa
+    -> ORDER BY Umur ASC
+    -> LIMIT 5;
++---------+------+
+| Nama    | Umur |
++---------+------+
+| Frank   |   19 |
+| Eve     |   20 |
+| John    |   21 |
+| Charlie |   21 |
+| Bob     |   22 |
++---------+------+
+5 rows in set (0.002 sec)
+
+MariaDB [tes_3]> SELECT * FROM Mahasiswa;
++--------+---------+----------------------+--------------------+------+
+| NIM    | Nama    | Alamat               | Jurusan            | Umur |
++--------+---------+----------------------+--------------------+------+
+| 123456 | John    | Jl. Raya No.5        | Teknik Informatika |   21 |
+| 234567 | Alice   | Jl. Gatot Subroto 1  | Sistem Informasi   |   23 |
+| 345678 | Bob     | Jl. Sutomo No.3      | Teknik Informatika |   22 |
+| 456789 | David   | Jl. Pahlawan No.6    | Manajemen          |   24 |
+| 567890 | Eve     | Jl. Diponegoro No.8  | Teknik Elektro     |   20 |
+| 678901 | Charlie | Jl. Cendrawasih No.9 | Statistika         |   21 |
+| 789012 | Frank   | Jl. Ahmad Yani No.6  | Teknik Informatika |   19 |
++--------+---------+----------------------+--------------------+------+
+7 rows in set (0.001 sec)
+
+MariaDB [tes_3]> SELECT M.Nama, MK.MataKuliah, MK.Nilai, MK.DosenPengajar
+    -> FROM Mahasiswa M
+    -> JOIN MataKuliah MK ON M.NIM = MK.NIM
+    -> WHERE MK.Nilai > 70;
++---------+-------------------+-------+---------------+
+| Nama    | MataKuliah        | Nilai | DosenPengajar |
++---------+-------------------+-------+---------------+
+| John    | Pemrograman Web   |    85 | Pak Budi      |
+| Bob     | Jaringan Komputer |    75 | Pak Dodi      |
+| John    | Sistem Operasi    |    90 | Pak Budi      |
+| David   | Manajemen Proyek  |    80 | Pak Fahri     |
+| Eve     | Bahasa Inggris    |    85 | Ibu Eka       |
+| Charlie | Statistika        |    75 | Pak Fahri     |
+| John    | Pemrograman Java  |    95 | Pak Budi      |
++---------+-------------------+-------+---------------+
+7 rows in set (0.002 sec)
+
+MariaDB [tes_3]>
